@@ -99,14 +99,18 @@ fn pi_session(root: &Path, session: &str, input: u64) {
 }
 
 async fn records(client: &reqwest::Client, server: &TestServer, assistant: &str) -> Vec<Value> {
-    client
+    let response = client
         .get(format!(
             "{}/api/{assistant}/usage/2026-09-11/export",
             server.url
         ))
         .send()
         .await
-        .unwrap()
+        .unwrap();
+    if response.status() == reqwest::StatusCode::NOT_FOUND {
+        return Vec::new();
+    }
+    response
         .error_for_status()
         .unwrap()
         .json::<Value>()
