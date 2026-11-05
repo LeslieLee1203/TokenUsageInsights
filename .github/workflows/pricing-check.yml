@@ -32,7 +32,7 @@ jobs:
         id: check
         run: node scripts/pricing-check.mjs --report pricing-report.md
       - name: Open or update pricing drift issue
-        if: github.event_name != 'pull_request' && (steps.check.outputs.drift != '0' || steps.check.outputs.added != '0' || steps.check.outputs.errors != '0')
+        if: github.event_name != 'pull_request' && github.event.repository.has_issues == true && (steps.check.outputs.drift != '0' || steps.check.outputs.added != '0' || steps.check.outputs.errors != '0')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
